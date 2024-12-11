@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniWallet", "MiniWallet\MiniWallet.csproj", "{A35F3705-9D15-4FE0-953B-AB69B593C63A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniWallet.Api", "MiniWallet\MiniWallet.Api.csproj", "{A35F3705-9D15-4FE0-953B-AB69B593C63A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniWallet.Database", "MiniWallet.Database\MiniWallet.Database.csproj", "{1D7B7A46-40D4-4980-AD66-906B0C8A54B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniWallet.Domain", "MiniWallet.Domain\MiniWallet.Domain.csproj", "{330581F4-5BC5-4AEE-983B-B7C993AE6572}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{A35F3705-9D15-4FE0-953B-AB69B593C63A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A35F3705-9D15-4FE0-953B-AB69B593C63A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A35F3705-9D15-4FE0-953B-AB69B593C63A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D7B7A46-40D4-4980-AD66-906B0C8A54B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D7B7A46-40D4-4980-AD66-906B0C8A54B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D7B7A46-40D4-4980-AD66-906B0C8A54B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D7B7A46-40D4-4980-AD66-906B0C8A54B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{330581F4-5BC5-4AEE-983B-B7C993AE6572}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{330581F4-5BC5-4AEE-983B-B7C993AE6572}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{330581F4-5BC5-4AEE-983B-B7C993AE6572}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{330581F4-5BC5-4AEE-983B-B7C993AE6572}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
