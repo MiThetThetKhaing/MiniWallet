@@ -1,4 +1,12 @@
+using Microsoft.EntityFrameworkCore;
+using MiniWallet.Database.Models;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<AppDbContext>(opt =>
+{
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("MainDbConnection"));
+});
 
 // Add services to the container.
 

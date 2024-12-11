@@ -12,7 +12,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <Folder Include="Controllers\Endpoints\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MiniWallet.Database\MiniWallet.Database.csproj" />
+    <ProjectReference Include="..\MiniWallet.Domain\MiniWallet.Domain.csproj" />
   </ItemGroup>
 
 </Project>
