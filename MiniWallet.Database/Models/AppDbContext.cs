@@ -6,12 +6,7 @@ namespace MiniWallet.Database.Models;
 
 public partial class AppDbContext : DbContext
 {
-    public AppDbContext()
-    {
-    }
-
-    public AppDbContext(DbContextOptions<AppDbContext> options)
-        : base(options)
+    public AppDbContext(DbContextOptions options) : base(options)
     {
     }
 
