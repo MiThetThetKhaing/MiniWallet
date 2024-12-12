@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MiniWallet.Domain.Featuers.Services
 {
-    public class DepositWithdrawServices
+    public class DepositWithdrawServices : IDepositWithdrawServices
     {
         private readonly AppDbContext _db;
 
@@ -67,6 +67,7 @@ namespace MiniWallet.Domain.Featuers.Services
                 _db.TblWallets.Update(mobile);
 
                 deposit.TransactionType = "CR";
+                deposit.Date = DateTime.Now;
                 await _db.TblDepositWithdraws.AddAsync(deposit);
                 await _db.SaveChangesAsync();
 
@@ -105,6 +106,7 @@ namespace MiniWallet.Domain.Featuers.Services
                 _db.TblWallets.Update(mobile);
 
                 withdraw.TransactionType = "DR";
+                withdraw.Date = DateTime.Now;
                 await _db.TblDepositWithdraws.AddAsync(withdraw);
                 await _db.SaveChangesAsync();
 
