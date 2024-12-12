@@ -10,9 +10,9 @@ namespace MiniWallet.Api.Controllers.Endpoints
     [ApiController]
     public class DepositWithdrawController : BaseController
     {
-        private readonly DepositWithdrawServices _service;
+        private readonly IDepositWithdrawServices _service;
 
-        public DepositWithdrawController(DepositWithdrawServices service)
+        public DepositWithdrawController(IDepositWithdrawServices service)
         {
             _service = service;
         }
