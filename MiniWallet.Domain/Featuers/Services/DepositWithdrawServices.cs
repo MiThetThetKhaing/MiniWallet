@@ -54,6 +54,8 @@ namespace MiniWallet.Domain.Featuers.Services
             try
             {
                 var mobile = await _db.TblWallets.AsNoTracking().FirstOrDefaultAsync(x => x.MobileNo == deposit.MobileNo);
+
+                #region "Validation"
                 if (mobile is null)
                 {
                     return Result<DepositWithdrawResponseModel>.ValidationError("This mobile number doesn't have wallet account.");
@@ -62,14 +64,21 @@ namespace MiniWallet.Domain.Featuers.Services
                 {
                     return Result<DepositWithdrawResponseModel>.ValidationError("Please Enter valid amount.");
                 }
+                #endregion
 
+                #region "Balance Calculation"
                 mobile.Balance += deposit.Amount;
                 _db.TblWallets.Update(mobile);
+                #endregion
 
+                #region "deposit"
                 deposit.TransactionType = "CR";
                 deposit.Date = DateTime.Now;
+                deposit.No = "DPT-" + deposit.Date.ToString("yyyyMMdd") + "-" + deposit.Id.ToString("D4"); //DPT-20241212-001
+
                 await _db.TblDepositWithdraws.AddAsync(deposit);
                 await _db.SaveChangesAsync();
+                #endregion
 
                 var result = new DepositWithdrawResponseModel
                 {
@@ -89,6 +98,8 @@ namespace MiniWallet.Domain.Featuers.Services
             try
             {
                 var mobile = await _db.TblWallets.AsNoTracking().FirstOrDefaultAsync(x => x.MobileNo == withdraw.MobileNo);
+
+                #region "Validation"
                 if (mobile is null)
                 {
                     return Result<DepositWithdrawResponseModel>.ValidationError("This mobile number doesn't have wallet account.");
@@ -101,14 +112,21 @@ namespace MiniWallet.Domain.Featuers.Services
                 {
                     return Result<DepositWithdrawResponseModel>.ValidationError("Insufficient Balance.");
                 }
+                #endregion
 
+                #region "Balance Calculation"
                 mobile.Balance -= withdraw.Amount;
                 _db.TblWallets.Update(mobile);
+                #endregion
 
+                #region "Withdraw"
                 withdraw.TransactionType = "DR";
                 withdraw.Date = DateTime.Now;
+                withdraw.No = "WTH-" + withdraw.Date.ToString("yyyyMMdd") + "-" + withdraw.Id.ToString("D4"); //DPT-20241212-001
+
                 await _db.TblDepositWithdraws.AddAsync(withdraw);
                 await _db.SaveChangesAsync();
+                #endregion
 
                 var result = new DepositWithdrawResponseModel
                 {
