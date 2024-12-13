@@ -23,6 +23,11 @@ namespace MiniWallet.Domain.Featuers.Services
         {
             try
             {
+                if (!mobileNo.StartsWith("09"))
+                {
+                    mobileNo = "09" + mobileNo;
+                }
+
                 var account = await _db.TblWallets.AsNoTracking().FirstOrDefaultAsync(x => x.MobileNo == mobileNo);
                 var mobile = await _db.TblDepositWithdraws.AsNoTracking().FirstOrDefaultAsync(x => x.MobileNo == mobileNo);
 
@@ -49,40 +54,60 @@ namespace MiniWallet.Domain.Featuers.Services
             }
         }
 
-        public async Task<Result<DepositWithdrawResponseModel>> CreateDeposit(TblDepositWithdraw deposit)
+        public async Task<Result<DepositWithdrawResponseModel>> CreateDeposit(string mobileNo, decimal amount)
         {
             try
             {
-                var mobile = await _db.TblWallets.AsNoTracking().FirstOrDefaultAsync(x => x.MobileNo == deposit.MobileNo);
+                if (!mobileNo.StartsWith("09"))
+                {
+                    mobileNo = "09" + mobileNo;
+                }
+
+                var mobile = await _db.TblWallets.AsNoTracking().FirstOrDefaultAsync(x => x.MobileNo == mobileNo);
+                var LastId = await _db.TblDepositWithdraws.AsNoTracking().OrderByDescending(x => x.Id).Select(x => x.Id).FirstOrDefaultAsync();
+                var currentId = LastId + 1;
 
                 #region "Validation"
+                if (mobileNo.Length > 11 || mobileNo.Length < 11)
+                {
+                    return Result<DepositWithdrawResponseModel>.ValidationError("Invalid mobile number length.");
+                }
                 if (mobile is null)
                 {
                     return Result<DepositWithdrawResponseModel>.ValidationError("This mobile number doesn't have wallet account.");
                 }
-                if (deposit.Amount <= 0)
+                if (amount <= 0)
                 {
                     return Result<DepositWithdrawResponseModel>.ValidationError("Please Enter valid amount.");
                 }
                 #endregion
 
                 #region "Balance Calculation"
-                mobile.Balance += deposit.Amount;
+                mobile.Balance += amount;
                 _db.TblWallets.Update(mobile);
                 #endregion
 
                 #region "deposit"
-                deposit.TransactionType = "CR";
-                deposit.Date = DateTime.Now;
-                deposit.No = "DPT-" + deposit.Date.ToString("yyyyMMdd") + "-" + deposit.Id.ToString("D4"); //DPT-20241212-001
+                //deposit.TransactionType = "CR";
+                //deposit.TxnDate = DateTime.Now;
+                //deposit.TxnNo = "DPT-" + deposit.TxnDate.ToString("yyyyMMdd") + "-" + currentId.ToString("D4"); //DPT-20241212-001
 
-                await _db.TblDepositWithdraws.AddAsync(deposit);
+                var model = new TblDepositWithdraw
+                {
+                    Date = DateTime.Now,
+                    No = "DPT-" + DateTime.Now.ToString("yyyyMMdd") + "-" + currentId.ToString("D4"), //DPT-20241212-001,
+                    MobileNo = mobileNo,
+                    Amount = amount,
+                    TransactionType = "CR"
+                };
+
+                await _db.TblDepositWithdraws.AddAsync(model);
                 await _db.SaveChangesAsync();
                 #endregion
 
                 var result = new DepositWithdrawResponseModel
                 {
-                    TblDepositWithdraw = deposit
+                    TblDepositWithdraw = model
                 };
 
                 return Result<DepositWithdrawResponseModel>.Success(result, "Cash Deposit is successfully completed.");
@@ -93,44 +118,64 @@ namespace MiniWallet.Domain.Featuers.Services
             }
         }
 
-        public async Task<Result<DepositWithdrawResponseModel>> CreateWithdraw(TblDepositWithdraw withdraw)
+        public async Task<Result<DepositWithdrawResponseModel>> CreateWithdraw(string mobileNo, decimal amount)
         {
             try
             {
-                var mobile = await _db.TblWallets.AsNoTracking().FirstOrDefaultAsync(x => x.MobileNo == withdraw.MobileNo);
+                if (!mobileNo.StartsWith("09"))
+                {
+                    mobileNo = "09" + mobileNo;
+                }
+
+                var mobile = await _db.TblWallets.AsNoTracking().FirstOrDefaultAsync(x => x.MobileNo == mobileNo);
+                var LastId = await _db.TblDepositWithdraws.AsNoTracking().OrderByDescending(x => x.Id).Select(x => x.Id).FirstOrDefaultAsync();
+                var currentId = LastId + 1;
 
                 #region "Validation"
+                if (mobileNo.Length > 11 || mobileNo.Length < 11)
+                {
+                    return Result<DepositWithdrawResponseModel>.ValidationError("Invalid mobile number length.");
+                }
                 if (mobile is null)
                 {
                     return Result<DepositWithdrawResponseModel>.ValidationError("This mobile number doesn't have wallet account.");
                 }
-                if (withdraw.Amount <= 0)
+                if (amount <= 0)
                 {
                     return Result<DepositWithdrawResponseModel>.ValidationError("Please Enter valid amount.");
                 }
-                if (mobile.Balance - withdraw.Amount < 10000)
+                if (mobile.Balance - amount < 10000)
                 {
                     return Result<DepositWithdrawResponseModel>.ValidationError("Insufficient Balance.");
                 }
                 #endregion
 
                 #region "Balance Calculation"
-                mobile.Balance -= withdraw.Amount;
+                mobile.Balance -= amount;
                 _db.TblWallets.Update(mobile);
                 #endregion
 
                 #region "Withdraw"
-                withdraw.TransactionType = "DR";
-                withdraw.Date = DateTime.Now;
-                withdraw.No = "WTH-" + withdraw.Date.ToString("yyyyMMdd") + "-" + withdraw.Id.ToString("D4"); //DPT-20241212-001
+                //withdraw.TransactionType = "DR";
+                //withdraw.Date = DateTime.Now;
+                //withdraw.No = "WTH-" + withdraw.Date.ToString("yyyyMMdd") + "-" + withdraw.Id.ToString("D4"); //DPT-20241212-001
 
-                await _db.TblDepositWithdraws.AddAsync(withdraw);
+                var model = new TblDepositWithdraw
+                {
+                    MobileNo = mobileNo,
+                    Date = DateTime.Now,
+                    No = "WTH-" + DateTime.Now.ToString("yyyyMMdd") + "-" + currentId.ToString("D4"), //DPT-20241212-001
+                    Amount = amount,
+                    TransactionType = "DR"
+                };
+
+                await _db.TblDepositWithdraws.AddAsync(model);
                 await _db.SaveChangesAsync();
                 #endregion
 
                 var result = new DepositWithdrawResponseModel
                 {
-                    TblDepositWithdraw = withdraw
+                    TblDepositWithdraw = model
                 };
 
                 return Result<DepositWithdrawResponseModel>.Success(result, "Cash Withdraw is successfully completed.");
