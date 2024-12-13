@@ -38,7 +38,7 @@ TransactionType
 
 #### Transaction
 ----------------------
-From mobile, To mobile, balance, notes
+=> From mobile, To mobile, balance, notes
 => Check From mobile exist
 => Check To mobile exist
 => From mobile != To mobile
