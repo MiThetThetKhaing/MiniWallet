@@ -6,6 +6,6 @@ namespace MiniWallet.Domain.Featuers.Services
     {
         Task<Result<DepositWithdrawResponseModel>> CreateDeposit(string mobileNo, decimal amount);
         Task<Result<DepositWithdrawResponseModel>> CreateWithdraw(string mobileNo, decimal amount);
-        Task<Result<DepositWithdrawResponseModel>> GetAllDepositWithdraw(string mobileNo);
+        Task<Result<DepositWithdrawResponseModel>> GetDepositWithdraw(string txnNo);
     }
 }
