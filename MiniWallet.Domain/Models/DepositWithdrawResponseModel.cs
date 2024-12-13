@@ -10,7 +10,5 @@ namespace MiniWallet.Domain.Models
     public class DepositWithdrawResponseModel
     {
         public TblDepositWithdraw TblDepositWithdraw { get; set; }
-
-        public List<TblDepositWithdraw> TblDepositWithdrawList { get; set; }
     }
 }
