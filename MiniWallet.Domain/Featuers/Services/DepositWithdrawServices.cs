@@ -19,34 +19,23 @@ namespace MiniWallet.Domain.Featuers.Services
             _db = db;
         }
 
-        public async Task<Result<DepositWithdrawResponseModel>> GetAllDepositWithdraw(string mobileNo)
+        public async Task<Result<DepositWithdrawResponseModel>> GetDepositWithdraw(string txnNo)
         {
             try
             {
-                if (!mobileNo.StartsWith("09"))
+                var transactionNo = await _db.TblDepositWithdraws.AsNoTracking().FirstOrDefaultAsync(x => x.No == txnNo);
+
+                if (transactionNo is null)
                 {
-                    mobileNo = "09" + mobileNo;
+                    return Result<DepositWithdrawResponseModel>.ValidationError("Transaction no doesn't exist.");
                 }
 
-                var account = await _db.TblWallets.AsNoTracking().FirstOrDefaultAsync(x => x.MobileNo == mobileNo);
-                var mobile = await _db.TblDepositWithdraws.AsNoTracking().FirstOrDefaultAsync(x => x.MobileNo == mobileNo);
-
-                if (account is null)
-                {
-                    return Result<DepositWithdrawResponseModel>.ValidationError("This mobile number doesn't have wallet account.");
-                }
-                if (mobile is null)
-                {
-                    return Result<DepositWithdrawResponseModel>.ValidationError("This mobile doesn't have any transaction.");
-                }
-
-                var list = await _db.TblDepositWithdraws.AsNoTracking().ToListAsync();
                 var result = new DepositWithdrawResponseModel
                 {
-                    TblDepositWithdrawList = list
+                    TblDepositWithdraw = transactionNo
                 };
 
-                return Result<DepositWithdrawResponseModel>.Success(result, "Here are Transaction for your mobile number.");
+                return Result<DepositWithdrawResponseModel>.Success(result, "Here are Transaction.");
             }
             catch (Exception ex)
             {
