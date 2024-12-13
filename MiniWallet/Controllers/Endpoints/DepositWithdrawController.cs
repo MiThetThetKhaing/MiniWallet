@@ -25,16 +25,16 @@ namespace MiniWallet.Api.Controllers.Endpoints
         }
 
         [HttpPost("deposit")]
-        public async Task<IActionResult> Deposit(TblDepositWithdraw deposit)
+        public async Task<IActionResult> Deposit(string mobileNo, decimal amount)
         {
-            var result = await _service.CreateDeposit(deposit);
+            var result = await _service.CreateDeposit(mobileNo, amount);
             return Execute(result);
         }
 
         [HttpPost("withdraw")]
-        public async Task<IActionResult> Withdraw(TblDepositWithdraw withdraw)
+        public async Task<IActionResult> Withdraw(string mobileNo, decimal amount)
         {
-            var result = await _service.CreateWithdraw(withdraw);
+            var result = await _service.CreateWithdraw(mobileNo, amount);
             return Execute(result);
         }
     }
