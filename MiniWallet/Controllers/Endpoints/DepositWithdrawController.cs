@@ -17,10 +17,10 @@ namespace MiniWallet.Api.Controllers.Endpoints
             _service = service;
         }
 
-        [HttpGet("get-all")]
-        public async Task<IActionResult> GetDepositWithdraw(string mobileNo)
+        [HttpGet("transaction-detail")]
+        public async Task<IActionResult> GetDepositWithdraw(string txnNo)
         {
-            var result = await _service.GetAllDepositWithdraw(mobileNo);
+            var result = await _service.GetDepositWithdraw(txnNo);
             return Execute(result);
         }
 
