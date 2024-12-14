@@ -16,6 +16,11 @@ namespace MiniWallet.Api
             if (model.IsSystemError)
                 return StatusCode(500, model);
 
+            if (model.IsNotFound)
+            {
+                return NotFound(model);
+            }
+
             return Ok(model);
         }
     }

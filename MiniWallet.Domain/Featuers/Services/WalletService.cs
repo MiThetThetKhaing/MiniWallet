@@ -196,7 +196,7 @@ namespace MiniWallet.Domain.Featuers.Services
             return response;
         }
 
-        public async Task<Result<WalletResponseModel>> ChangeNames(string mobileNo, int pin, string userName, string fullName)
+        public async Task<Result<WalletResponseModel>> ChangeNames(string mobileNo, int pin, string? userName, string? fullName)
         {
             Result<WalletResponseModel> response = new Result<WalletResponseModel>();
 
