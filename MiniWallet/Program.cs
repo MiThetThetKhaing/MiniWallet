@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(opt =>
 {
-    opt.UseSqlServer(builder.Configuration.GetConnectionString("MainDbConnection"));
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("MainDbConnection1"));
 }, ServiceLifetime.Transient, ServiceLifetime.Transient);
 
 // Add services to the container.
