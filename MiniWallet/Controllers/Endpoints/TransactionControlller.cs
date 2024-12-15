@@ -9,9 +9,9 @@ namespace MiniWallet.Api.Controllers.Endpoints
     [ApiController]
     public class TransactionControlller : BaseController
     {
-        private readonly TransactionService _service;
+        private readonly ITransactionService _service;
 
-        public TransactionControlller(TransactionService service)
+        public TransactionControlller(ITransactionService service)
         {
             _service = service;
         }

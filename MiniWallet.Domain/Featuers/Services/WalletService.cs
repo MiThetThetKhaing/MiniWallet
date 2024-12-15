@@ -12,7 +12,7 @@ using MiniWallet.Domain.Models;
 
 namespace MiniWallet.Domain.Featuers.Services
 {
-    public class WalletService
+    public class WalletService : IWalletService
     {
         private readonly AppDbContext _db;
         private readonly string mobilePattern = @"^(09|01)[0-9]{6,9}$";
@@ -26,13 +26,13 @@ namespace MiniWallet.Domain.Featuers.Services
         public async Task<Result<WalletResponseModel>> CreateWallet(WalletRequestModel newWallet)
         {
             Result<WalletResponseModel> response = new Result<WalletResponseModel>();
-            
-            if(newWallet.WalletUserName.IsNullOrEmpty() || newWallet.WalletUserName.Length < 4)
+
+            if (newWallet.WalletUserName.IsNullOrEmpty() || newWallet.WalletUserName.Length < 3)
             {
                 response = Result<WalletResponseModel>.ValidationError("User Name can't be empty or shorter than 4 characters.");
                 goto Result;
             }
-            if(newWallet.FullName.IsNullOrEmpty() || newWallet.FullName.Length < 4)
+            if (newWallet.FullName.IsNullOrEmpty() || newWallet.FullName.Length < 3)
             {
                 response = Result<WalletResponseModel>.ValidationError("Full Name can't be empty or shorter than 4 characters.");
                 goto Result;
@@ -42,7 +42,7 @@ namespace MiniWallet.Domain.Featuers.Services
                 response = Result<WalletResponseModel>.ValidationError("Mobile Number should be \n- 8 digits mimum\n- 11 digits maximum\n- And, should starts from 01 or 09.");
                 goto Result;
             }
-            if(newWallet.PinCode < 100000)
+            if (newWallet.PinCode < 100000)
             {
                 response = Result<WalletResponseModel>.ValidationError("Pin Code should have minimum number of 6 digits and should not start with 0(s).");
                 goto Result;
@@ -60,9 +60,10 @@ namespace MiniWallet.Domain.Featuers.Services
             await _db.AddAsync(wallet);
             int result = await _db.SaveChangesAsync();
 
-            if(result > 0)
+            if (result > 0)
             {
-                WalletResponseModel model = new WalletResponseModel { 
+                WalletResponseModel model = new WalletResponseModel
+                {
                     Wallet = wallet
                 };
                 response = Result<WalletResponseModel>.Success(model, "Wallet Created!");
@@ -71,7 +72,7 @@ namespace MiniWallet.Domain.Featuers.Services
 
             response = Result<WalletResponseModel>.SystemError("Internal Server Error!");
 
-            Result:
+        Result:
             return response;
         }
 
@@ -120,9 +121,19 @@ namespace MiniWallet.Domain.Featuers.Services
                 response = Result<WalletResponseModel>.NotFound("Wallet Not Found!");
                 goto Result;
             }
-            if(wallet.PinCode != oldPin)
+            if (wallet.PinCode != oldPin)
             {
                 response = Result<WalletResponseModel>.SystemError("Pin Code is not correct!");
+                goto Result;
+            }
+            if (newPin < 100000)
+            {
+                response = Result<WalletResponseModel>.ValidationError("New Pin should be 6 digits number and should not start with 0(s).");
+                goto Result;
+            }
+            if(wallet.PinCode == newPin)
+            {
+                response = Result<WalletResponseModel>.ValidationError("New Pin can't be the same with Old Pin.");
                 goto Result;
             }
 
@@ -156,7 +167,7 @@ namespace MiniWallet.Domain.Featuers.Services
                 response = Result<WalletResponseModel>.ValidationError("Mobile Number can't be null!");
                 goto Result;
             }
-            if(!Regex.IsMatch(newMobileNo, mobilePattern))
+            if (!Regex.IsMatch(newMobileNo, mobilePattern))
             {
                 response = Result<WalletResponseModel>.ValidationError("Mobile Number should be \n- 8 digits mimum\n- 11 digits maximum\n- And, should starts from 01 or 09.");
                 goto Result;
@@ -221,16 +232,16 @@ namespace MiniWallet.Domain.Featuers.Services
 
             if (!userName.IsNullOrEmpty())
             {
-                if (userName.Length < 4)
+                if (userName.Length < 3)
                 {
                     response = Result<WalletResponseModel>.ValidationError("User Name can't be empty or shorter than 4 characters.");
                     goto Result;
                 }
                 wallet.WalletUserName = userName;
             }
-            if (!userName.IsNullOrEmpty())
+            if (!fullName.IsNullOrEmpty())
             {
-                if (fullName.IsNullOrEmpty() || fullName.Length < 4)
+                if (fullName.Length < 3)
                 {
                     response = Result<WalletResponseModel>.ValidationError("Full Name can't be empty or shorter than 4 characters.");
                     goto Result;

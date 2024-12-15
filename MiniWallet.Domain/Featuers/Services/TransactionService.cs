@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MiniWallet.Domain.Featuers.Services
 {
-    public class TransactionService
+    public class TransactionService : ITransactionService
     {
         private readonly AppDbContext _db;
 
@@ -27,13 +27,13 @@ namespace MiniWallet.Domain.Featuers.Services
 
             if (sender is null)
             {
-                model = Result<TransactionResponseModel>.ValidationError("Sender not found.");
+                model = Result<TransactionResponseModel>.NotFound("Sender not found.");
                 goto Result;
             }
 
             if (receiver is null)
             {
-                model = Result<TransactionResponseModel>.ValidationError("Receiver not found.");
+                model = Result<TransactionResponseModel>.NotFound("Receiver not found.");
                 goto Result;
             }
 
@@ -51,7 +51,7 @@ namespace MiniWallet.Domain.Featuers.Services
 
             if (sender.PinCode != Pin)
             {
-                model = Result<TransactionResponseModel>.ValidationError("Invalid Pin.");
+                model = Result<TransactionResponseModel>.ValidationError("Wrong Pin.");
                 goto Result;
             }
 
@@ -61,8 +61,12 @@ namespace MiniWallet.Domain.Featuers.Services
             _db.TblWallets.Update(sender);
             _db.TblWallets.Update(receiver);
 
+            var LastId = await _db.TblTransactions.AsNoTracking().OrderByDescending(x => x.TransactionId).Select(x => x.TransactionId).FirstOrDefaultAsync();
+            var currentId = LastId + 1;
+
             var transaction = new TblTransaction
             {
+                TransactionNo = "TRC-" + DateTime.Now.ToString("yyyyMMdd") + "-" + currentId.ToString("D4"),
                 SenderMobileNo = senderMobileNo,
                 ReceiverMobileNo = receiverMobileNo,
                 Amount = amount,
@@ -94,7 +98,7 @@ namespace MiniWallet.Domain.Featuers.Services
 
             if (transaction is null)
             {
-                model = Result<TransactionResponseModel>.ValidationError("Transaction not found.");
+                model = Result<TransactionResponseModel>.NotFound("Transaction not found.");
                 goto Result;
             }
 

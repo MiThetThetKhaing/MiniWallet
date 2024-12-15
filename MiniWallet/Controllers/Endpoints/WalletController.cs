@@ -9,9 +9,9 @@ namespace MiniWallet.Api.Controllers.Endpoints
     [ApiController]
     public class WalletController : BaseController
     {
-        private readonly WalletService _service;
+        private readonly IWalletService _service;
 
-        public WalletController(WalletService service) 
+        public WalletController(IWalletService service) 
         { 
             _service = service;
         }
@@ -43,12 +43,12 @@ namespace MiniWallet.Api.Controllers.Endpoints
             }
         }
 
-        [HttpPatch("{mobileNo}")]
-        public async Task<IActionResult> ChangePin(string mobileNo, int oldPin, int newPin)
+        [HttpPatch("/changePin/{mobileNo}")]
+        public async Task<IActionResult> ChangePin(string mobileNo, ChangePin changePin)
         {
             try
             {
-                var response = await _service.ChangePin(mobileNo, oldPin, newPin);
+                var response = await _service.ChangePin(mobileNo, changePin.oldPin, changePin.newPin);
                 return Execute(response);
             }
             catch (Exception ex)
@@ -71,7 +71,7 @@ namespace MiniWallet.Api.Controllers.Endpoints
             }
         }
 
-        [HttpPatch("{mobileNo}")]
+        [HttpPatch("/updateNames/{mobileNo}/{pin}")]
         public async Task<IActionResult> UpdateNames(string mobileNo, int pin, string? userName, string? fullName)
         {
             try

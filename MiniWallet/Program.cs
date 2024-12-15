@@ -11,6 +11,8 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 
 // Add services to the container.
 builder.Services.AddScoped<IDepositWithdrawServices, DepositWithdrawServices>();
+builder.Services.AddScoped<IWalletService, WalletService>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
